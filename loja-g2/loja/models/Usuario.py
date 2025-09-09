@@ -13,9 +13,10 @@ class Usuario(models.Model):
     def create_user_usuario(sender, instance, created, **kwargs):
         try:
             if created:
-              Usuario.objects.create(user=instance)
+                Usuario.objects.create(user=instance)
         except:
             pass
+
     @receiver(post_save, sender=User)
     def save_user_usuario(sender, instance, **kwargs):
         try:
