@@ -6,6 +6,7 @@ from datetime import timedelta, datetime
 from django.utils import timezone
 # inclua as bibliotecas FileSystemStorage
 from django.core.files.storage import FileSystemStorage
+from django.contrib.auth.decorators import login_required
 
 def list_produto_view(request, id=None):
     #Carrega dados do navegador
@@ -57,6 +58,8 @@ def list_produto_view(request, id=None):
     }
     return render(request, template_name='produto/produto.html', context=context, status=200)
 
+# Adicione a linha a seguir
+@login_required
 def edit_produto_view(request, id=None):
     produtos = Produto.objects.all()
     if id is not None:
@@ -104,6 +107,7 @@ def edit_produto_postback(request, id=None):
             print("Erro salvando edição de produto: %s" % e)
     return redirect("/produto")
 
+@login_required
 def details_produto_view(request, id=None):
     # Processa o evento GET gerado pela action
     produtos = Produto.objects.all()

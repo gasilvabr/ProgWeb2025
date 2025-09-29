@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.shortcuts import render, redirect
 # inclua as bibliotecas FileSystemStorage
 from django.core.files.storage import FileSystemStorage
+from django.contrib.auth.decorators import login_required
 
 def list_produto_view(request, id=None):
     # Carrega informações vindas do navegador (query string)
@@ -53,6 +54,7 @@ def list_produto_view(request, id=None):
     }
     return render(request, template_name='produto/produto.html', context=context, status=200)
 
+@login_required
 def edit_produto_view(request, id=None):
     produtos = Produto.objects.all()
     if id is not None:
