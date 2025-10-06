@@ -12,3 +12,6 @@ PERFIL = (
     (2, 'Usuario')
 )
 from .Usuario import Usuario
+# inclua as classes de carrinho no final
+from .Carrinho import Carrinho
+from .Carrinho import CarrinhoItem
