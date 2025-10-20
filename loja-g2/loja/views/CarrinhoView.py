@@ -25,29 +25,50 @@ def create_carrinhoitem_view(request, produto_id=None):
                 # Armazena o ID do carrinho na sessão
                 request.session['carrinho_id'] = carrinho.id
                 print ('novo carrinho: ' + str(carrinho.id)) 
-            else:
-                # Se o carrinho não existir na sessão, cria um novo carrinho
-                carrinho = Carrinho.objects.create()
-                # Armazena o ID do carrinho na sessão
-                request.session['carrinho_id'] = carrinho.id
-                print ('carrinho2: ' + str(carrinho.id)) 
-            # Verifica se o produto já existe no carrinho do usuário
-            carrinho_item = CarrinhoItem.objects.filter(carrinho=carrinho, produto=produto).first()
-            if carrinho_item:
-                # Se o produto já estiver no carrinho, apenas aumenta a quantidade
-                carrinho_item.quantidade += 1 
-                print ('item de carrinho: Acrescentou 1 item do produto ' + 
-                str(carrinho_item.id)) 
-            else:
-                # Se o produto não estiver no carrinho, cria um novo item no carrinho
-                carrinho_item = CarrinhoItem.objects.create(
-                carrinho=carrinho,
-                produto=produto,
-                quantidade=1,
-                preco=produto.preco
-                )
-                print ('item de carrinho: Acrescentou o produto ' + str(carrinho_item.id)) 
-            carrinho_item.save()
-            print ('item de carrinho salvo: ' + str(carrinho_item.id))
+        else:
+            # Se o carrinho não existir na sessão, cria um novo carrinho
+            carrinho = Carrinho.objects.create()
+            # Armazena o ID do carrinho na sessão
+            request.session['carrinho_id'] = carrinho.id
+            print ('carrinho2: ' + str(carrinho.id)) 
+        # Verifica se o produto já existe no carrinho do usuário
+        carrinho_item = CarrinhoItem.objects.filter(carrinho=carrinho, produto=produto).first()
+        if carrinho_item:
+            # Se o produto já estiver no carrinho, apenas aumenta a quantidade
+            carrinho_item.quantidade += 1 
+            print ('item de carrinho: Acrescentou 1 item do produto ' + 
+            str(carrinho_item.id)) 
+        else:
+            # Se o produto não estiver no carrinho, cria um novo item no carrinho
+            carrinho_item = CarrinhoItem.objects.create(
+            carrinho=carrinho,
+            produto=produto,
+            quantidade=1,
+            preco=produto.preco
+            )
+            print ('item de carrinho: Acrescentou o produto ' + str(carrinho_item.id)) 
+        carrinho_item.save()
+        print ('item de carrinho salvo: ' + str(carrinho_item.id))
     return redirect('/carrinho')
 
+def list_carrinho_view(request):
+    print ('list_carrinho_view')
+    carrinho = None
+    carrinho_item = None
+    # Tenta pegar o carrinho da sessão ou cria um novo carrinho
+    carrinho_id = request.session.get('carrinho_id')
+    if carrinho_id:
+        print ('carrinho: ' + str(carrinho_id))
+        # Obtém o carrinho do usuário
+        carrinho = Carrinho.objects.filter(id=carrinho_id).first()
+        print ('Data do carrinho' + str(carrinho.criado_em) )
+        
+        # Verifica se o produto já existe no carrinho do usuário
+        carrinho_item = CarrinhoItem.objects.filter(carrinho_id=carrinho_id)
+        if carrinho_item:
+            print ('itens de carrinho encontrado: ' + str(carrinho_item))
+    context = {
+        'carrinho': carrinho,
+        'itens': carrinho_item
+    }
+    return render(request, 'carrinho/carrinho-listar.html', context=context)
