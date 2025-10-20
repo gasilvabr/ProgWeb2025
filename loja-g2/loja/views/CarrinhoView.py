@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from loja.models import Produto, Carrinho, CarrinhoItem
 from datetime import datetime
+
 # Função para adicionar um item ao carrinho
 def create_carrinhoitem_view(request, produto_id=None):
     print ('create_carrinhoitem_view') 

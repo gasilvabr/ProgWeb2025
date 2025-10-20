@@ -95,8 +95,24 @@ def confirmar_carrinho_view(request):
             carrinho.situacao = 1
             carrinho.confirmado_em = timezone.make_aware(datetime.today())
             carrinho.save()
-            print ('carrinho salvo')
+
+            # Iniciar novo carrinho
+            carrinhoNovo = Carrinho.objects.create()
+            # Armazena o ID do carrinho na sessão
+            request.session['carrinho_id'] = carrinhoNovo.id
+            print ('novo carrinho: ' + str(carrinhoNovo.id))             
+
+
     context = {
         'carrinho': carrinho
     }
     return render(request, 'carrinho/carrinho-confirmado.html', context=context)
+
+# Função para excluir um item do carrinho
+def remover_item_view(request, item_id):
+    item = get_object_or_404(CarrinhoItem, id=item_id)
+    # Verifica se o item pertence ao carrinho do usuário (opcional)
+    carrinho_id = request.session.get('carrinho_id')
+    if carrinho_id == item.carrinho.id:
+        item.delete()
+    return redirect('/carrinho')
